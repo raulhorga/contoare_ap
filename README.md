@@ -1,21 +1,29 @@
-# Notițele noastre · v2
+# Casa mea — contoare și facturi
 
-Aplicație mobile-first cu aspect de carnet de notițe. **Lista comună** se deschide implicit; butonul și ecranul Acasă au fost eliminate. Pe desktop există navigare în lateral, iar pe mobil o bară de navigare fixă jos.
+Aplicație web independentă, optimizată pentru telefon și desktop, inspirată din tabelul fotografiat și din aspectul aplicației „Notițele noastre”.
 
-Editorul de notițe permite text liber și autosalvare în foaia de cumpărături / ToDo. Checklist-urile, categoriile, listele Raul și Andreea, camerele casei, istoricul DONE cu dată și oră, traducerea RO/EN și exportul CSV rămân disponibile.
+## Pornire
 
-## Foi EtherCalc
+Deschide `index.html` într-un browser pentru o utilizare locală sau publică toate cele 5 fișiere (`index.html`, `styles.css`, `app.js`, `manifest.webmanifest`, `icon.svg`) într-un director pe un site HTTPS (de exemplu GitHub Pages). Pe telefon, folosește opțiunea „Adaugă pe ecranul principal”.
 
-- Cumpărături, activități și notițe: https://calc.domainepublic.net/0yku9i1un5nf
-- De avut în casă: https://calc.domainepublic.net/ewi97w9qa7ks
+## Ce conține
 
-## Publicare
+- Citiri cumulative lunare: apă baie mică, apă baie mare, gaz și curent.
+- Consumul calculat ca diferența dintre citirea lunii și ultima citire anterioară disponibilă, inclusiv între ani. Dacă nu există o citire precedentă, consumul este „—”. Dacă valoarea scade, consumul nu este calculat (posibil contor schimbat).
+- Cheltuieli lunare în RON: factură gaz, factură curent, întreținere bloc, internet / televizune, altele. O factură de curent este un singur câmp, deoarece cererea o repeta de două ori; poate fi extinsă dacă sunt două facturi diferite.
+- Dashboard cu total pe lună/an, grafic pe 12 luni, defalcare, tabele și export CSV.
+- Ani anteriori și viitori, RO/EN și temă zi/noapte (preferințe memorate pe dispozitiv).
 
-Publică `index.html`, `styles.css`, `app.js`, `manifest.webmanifest` și `icon.svg` în același director al unui hosting HTTPS, cum ar fi GitHub Pages. După actualizare, reîncarcă pagina dacă browserul a păstrat fișiere vechi în cache.
+## EtherCalc și siguranța datelor
 
-**Limitare:** sincronizarea directă depinde de permisiunile CORS ale serverului EtherCalc și de formatul datelor. Codul refuză să suprascrie foi care au o structură necunoscută. Nu a fost efectuat un test live de scriere în foile utilizatorului.
+Foaie configurată: https://calc.domainepublic.net/efzx9g0n1r12
 
+Aplicația încearcă să citească CSV din `/_/efzx9g0n1r12/csv` sau `/=efzx9g0n1r12.csv` și să scrie CSV cu `PUT /_/efzx9g0n1r12`. Datele sunt salvate imediat în `localStorage`, apoi sincronizate dacă serverul permite CORS și operațiile de scriere/citire. Salvarea online este confirmată doar după o recitire și verificare a înregistrărilor.
 
+**Atenție:** nu am putut testa efectiv scrierea în această foaie. Dacă foaia conține deja alte informații sau o structură necunoscută, aplicația refuză să o suprascrie. Dacă serverul nu acceptă sincronizarea directă, datele rămân doar pe dispozitiv; utilizează Export CSV pentru copii de rezervă. Nu șterge datele din browser înainte de a verifica salvarea pe server. EtherCalc nu oferă automat autentificare privată; persoanele cu linkul ar putea avea acces la date.
 
-## Categorii direct în editorul de notițe
-În **Lista comună**, pune cursorul pe un rând sau selectează textul dorit și apasă **Categorie** pentru a-l transforma într-un titlu **bold și subliniat**. Apasă **Text normal** ca să revii la un paragraf obișnuit. Formatarea și textul sunt salvate automat în același rând EtherCalc ca înainte (coloana `notes`, cu prefixul `HTML_NOTE_V1:`). Notițele vechi sunt compatibile. Dacă editezi manual rândul notiței direct în EtherCalc, păstrează acest prefix și structura HTML pentru a conserva formatarea.
+Schema CSV: `record_type,month,water_small,water_large,gas,electricity,gas_bill,electric_bill,maintenance,internet_bill,other,notes,updated_at,deleted`. Fiecare lună are cheia `YYYY-MM` și este un rând din foaie. Câmpurile necompletate sunt distincte de zero.
+
+## Datele din fotografii
+
+Fotografiile sunt folosite ca inspirație pentru câmpuri și structură. Nu am importat automat citirile istorice de mână, pentru a nu introduce valori greșite; ele pot fi transcrise manual, lună de lună.
